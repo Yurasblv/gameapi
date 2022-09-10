@@ -1,12 +1,22 @@
-from src.db import *
-from typing import Union
+from src.models import User, Game
 from src.crud.abc import ModelType
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
-def search_user_db(model: ModelType) -> Union[ModelType, Exception]:
+async def search_user_db(db: AsyncSession, model: ModelType) -> ModelType:
     """Method return user model if it exists in db"""
-    if Session.query(User.query.all()).filter_by(username=model.username).count() >= 1:
-        raise ValueError("User Exists")
-    else:
-        return model
+    query = select(User).filter_by(name=model.dict()['name'])
+    instances = await db.execute(query)
+    if instances.scalars().first() is not None:
+        raise Exception('This name for user exists')
+    return model
+
+
+async def search_game_db(db: AsyncSession, model: ModelType) -> ModelType:
+    """Method return user model if it exists in db"""
+    query = select(Game).filter_by(name=model.dict()['name'])
+    instances = await db.execute(query)
+    if instances.scalars().first() is not None:
+        raise Exception('This name for game exists')
+    return model

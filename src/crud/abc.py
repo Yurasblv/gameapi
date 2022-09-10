@@ -1,29 +1,28 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Dict, List
+from typing import TypeVar, Generic, List
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
-
+from sqlalchemy.ext.asyncio import AsyncSession
 ModelType = TypeVar('ModelType', bound=BaseModel)
 
 
-class AbstractCRUD(ABC, ModelType):
+class AbstractCRUD(ABC, Generic[ModelType]):
 
     @abstractmethod
-    async def create(self, db: Session, *, data: ModelType) -> ModelType:
+    async def create(self, db: AsyncSession, *, data: ModelType) -> ModelType:
         ...
 
     @abstractmethod
-    async def get_one(self, db: Session, *, id: int) -> ModelType:
+    async def get_one(self, db: AsyncSession, *, id: int) -> ModelType:
         ...
 
     @abstractmethod
-    async def get_all(self, db: Session, *, page: int, per_page: int, **kwargs) -> List[ModelType]:
+    async def get_all(self, db: AsyncSession, *, page: int, per_page: int, **kwargs) -> List[ModelType]:
         ...
 
     @abstractmethod
-    async def update(self, db: Session, *, obj_in: ModelType, **kwargs) -> ModelType:
+    async def update(self, db: AsyncSession, *, obj_in: ModelType, **kwargs) -> ModelType:
         ...
 
     @abstractmethod
-    async def delete(self, db: Session, *, id: int) -> ModelType:
+    async def delete(self, db: AsyncSession, *, id: int) -> ModelType:
         ...

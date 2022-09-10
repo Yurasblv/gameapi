@@ -1,14 +1,16 @@
 from pydantic import BaseModel, validator
-from typing import AnyStr
 
 
 class User(BaseModel):
-    name: AnyStr
+    name: str
     age: int
-    email: AnyStr
+    email: str
+
+    class Config:
+        orm_mode = True
 
     @validator("name")
-    def name_validator(cls, value: AnyStr):
+    def name_validator(cls, value: str):
         if len(value) < 4:
             raise ValueError("Username too short")
         if len(value) > 30:
@@ -25,11 +27,11 @@ class User(BaseModel):
 
 
 class Game(BaseModel):
-    name: AnyStr
+    name: str
     user_id: int
 
     @validator("name")
-    def name_validator(cls, value: AnyStr):
+    def name_validator(cls, value: str):
         if len(value) < 4:
             raise ValueError("Username too short")
         if len(value) > 30:

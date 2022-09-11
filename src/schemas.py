@@ -1,7 +1,7 @@
 from pydantic import BaseModel, validator
 
 
-class User(BaseModel):
+class UserSchema(BaseModel):
     name: str
     age: int
     email: str
@@ -26,9 +26,11 @@ class User(BaseModel):
         return value
 
 
-class Game(BaseModel):
+class GameSchema(BaseModel):
     name: str
-    user_id: int
+
+    class Config:
+        orm_mode = True
 
     @validator("name")
     def name_validator(cls, value: str):
@@ -37,3 +39,10 @@ class Game(BaseModel):
         if len(value) > 30:
             raise ValueError("Username too long")
         return value
+
+
+class GameConnectSchema(GameSchema):
+    user_id: int
+
+    class Config:
+        orm_mode = True

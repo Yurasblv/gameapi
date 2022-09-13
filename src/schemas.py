@@ -1,4 +1,5 @@
 from pydantic import BaseModel, validator
+from typing import List, Optional
 
 
 class UserSchema(BaseModel):
@@ -41,8 +42,22 @@ class GameSchema(BaseModel):
         return value
 
 
-class GameConnectSchema(GameSchema):
-    user_id: int
+class ConnectSchema(GameSchema):
+    user: str
+
+    class Config:
+        orm_mode = True
+
+
+class GameConnectsSchema(GameSchema):
+    user: Optional[List[UserSchema]]
+
+    class Config:
+        orm_mode = True
+
+
+class UserGamesSchema(UserSchema):
+    game: Optional[List[GameSchema]]
 
     class Config:
         orm_mode = True
